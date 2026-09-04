@@ -221,6 +221,14 @@
     font-size: 20px;
     border: 3px solid transparent;
     transition: border-color 0.15s ease;
+    overflow: hidden;
+  }
+
+  .avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
 
   .vendedor:hover .avatar { border-color: var(--verde); }
@@ -290,15 +298,15 @@
   // Se todos caem no mesmo número (Macal Marketing) e a triagem é manual,
   // deixa o mesmo telefone nos três e o nome ajuda a rotear internamente.
   const VENDEDORES = [
-    { nome: "Marcelo",    iniciais: "MA", cor: "#009246", telefone: "553184811450" },
-    { nome: "Felipe",     iniciais: "FE", cor: "#18382b", telefone: "553184811450" },
-    { nome: "Ana Livia",  iniciais: "AL", cor: "#ed3237", telefone: "553184811450" },
-    { nome: "Kaique",     iniciais: "KA", cor: "#009246", telefone: "553184811450" },
-    { nome: "Ricardo",    iniciais: "RI", cor: "#18382b", telefone: "553184811450" },
-    { nome: "Bruno",      iniciais: "BR", cor: "#ed3237", telefone: "553184811450" },
-    { nome: "Matheus",    iniciais: "MT", cor: "#009246", telefone: "553184811450" },
-    { nome: "Thaís",      iniciais: "TH", cor: "#18382b", telefone: "553184811450" },
-    { nome: "Douglas",    iniciais: "DO", cor: "#ed3237", telefone: "553184811450" },
+    { nome: "Marcelo",    iniciais: "MA", cor: "#009246", telefone: "5531994380416", foto: "marcelo.jpg" },
+    { nome: "Felipe",     iniciais: "FE", cor: "#18382b", telefone: "5531994380407", foto: "felipe.jpg" },
+    { nome: "Ana Livia",  iniciais: "AL", cor: "#ed3237", telefone: "5531994340777", foto: "ana-livia.jpg" },
+    { nome: "Kaique",     iniciais: "KA", cor: "#009246", telefone: "5531984335866", foto: "kaique.jpg" },
+    { nome: "Ricardo",    iniciais: "RI", cor: "#18382b", telefone: "5531982094862", foto: "ricardo.jpg" },
+    { nome: "Bruno",      iniciais: "BR", cor: "#ed3237", telefone: "5531983415122", foto: "bruno.jpg" },
+    { nome: "Matheus",    iniciais: "MT", cor: "#009246", telefone: "5531983494210", foto: "matheus.jpg" },
+    { nome: "Thaís",      iniciais: "TH", cor: "#18382b", telefone: "5531985428504", foto: "thais.jpg" },
+    { nome: "Douglas",    iniciais: "DO", cor: "#ed3237", telefone: "5531982369477", foto: "douglas.jpg" },
   ];
 
   /* ====================================================== */
@@ -384,7 +392,9 @@
     const btn = document.createElement('button');
     btn.className = 'vendedor';
     btn.innerHTML = `
-      <div class="avatar" style="background:${v.cor}">${v.iniciais}</div>
+      <div class="avatar" style="background:${v.cor}">
+        <img src="${v.foto}" alt="${v.nome}" onerror="this.remove(); this.parentElement.textContent='${v.iniciais}';">
+      </div>
       <div class="nome-vendedor">${v.nome}</div>
     `;
     btn.addEventListener('click', () => {
