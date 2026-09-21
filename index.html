@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Seu desconto Macal</title>
+<title>Cupom PRIMAVERA | Macal Madeiras</title>
 <style>
   :root {
     --verde: #009246;
@@ -41,8 +41,8 @@
   }
 
   .logo {
-    height: 34px;
-    margin-bottom: 28px;
+    height: 64px;
+    margin-bottom: 16px;
   }
 
   .barra {
@@ -53,7 +53,6 @@
     border-radius: 2px;
   }
 
-  /* ---------- ESTADOS ---------- */
   .estado { display: none; }
   .estado.ativo { display: block; }
 
@@ -88,7 +87,6 @@
   button:active { transform: scale(0.97); }
   button:hover { background: #007a3a; }
 
-  /* ---------- EXPLOSÃO ---------- */
   .palco {
     position: relative;
     height: 170px;
@@ -188,10 +186,10 @@
 
   .legenda-desconto.visivel { opacity: 1; }
 
-  /* ---------- VENDEDORES ---------- */
   .vendedores {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    justify-items: center;
     gap: 16px;
     margin-bottom: 8px;
   }
@@ -249,17 +247,15 @@
 
 <div class="card">
 
-  <img class="logo" src="https://stratus.campaign-image.com/images/864203000072099196_zc_v1_1786713172143_logo_01_macala.png" alt="Macal Madeiras">
+  <img class="logo" src="logo-macal.png" alt="Macal Madeiras">
   <div class="barra"></div>
 
-  <!-- ESTADO 1: convite -->
   <div class="estado ativo" id="estado-inicio">
-    <h1>Você tem um desconto reservado</h1>
-    <p class="sub">Toque no botão abaixo pra descobrir a condição especial que separamos pra você.</p>
-    <button id="btn-revelar">Descobrir meu desconto</button>
+    <h1>Seu cupom PRIMAVERA está reservado</h1>
+    <p class="sub" id="sub-inicio">Toque no botão e descubra o desconto no seu orçamento.</p>
+    <button id="btn-revelar">Revelar meu cupom</button>
   </div>
 
-  <!-- ESTADO 2: revelação -->
   <div class="estado" id="estado-revelacao">
     <div class="palco" id="palco"></div>
     <div class="medalha" id="medalha">
@@ -267,50 +263,32 @@
         <div class="numero" id="numero">-- <span>%</span></div>
       </div>
     </div>
-    <p class="legenda-desconto" id="legenda">de desconto na sua próxima compra</p>
-    <button id="btn-resgatar" style="display:none;">Resgatar com um consultor</button>
+    <p class="legenda-desconto" id="legenda">de desconto no seu orçamento</p>
+    <button id="btn-resgatar" style="display:none;">Resgatar com a Ana Lívia</button>
   </div>
 
-  <!-- ESTADO 3: escolha do vendedor -->
   <div class="estado" id="estado-vendedores">
-    <h1>Fale com quem vai cuidar do seu pedido</h1>
-    <p class="sub">Escolha um consultor pra confirmar seu desconto no WhatsApp.</p>
+    <h1 id="titulo-vendedores">Fale com quem cuida do seu orçamento</h1>
+    <p class="sub" id="sub-vendedores">Toque no consultor pra abrir o WhatsApp com o cupom.</p>
     <div class="vendedores" id="lista-vendedores"></div>
   </div>
 
 </div>
 
 <script>
-  /* ======================================================
-     CONFIGURAÇÃO — troque aqui antes de subir pra produção
-     ====================================================== */
-
-  // O valor real deve vir mesclado no link do email (campo do Zoho),
-  // nunca sorteado no navegador. Isso mantém o número auditável e
-  // dentro do que foi aprovado pelo Felipe/Marcelo.
-  // Exemplo de link real: pagina.html?desconto=12
   const params = new URLSearchParams(window.location.search);
-  const DESCONTO_FALLBACK = 10; // só usado se ?desconto= não vier na URL (demo)
+  const DESCONTO_FALLBACK = 10;
   const desconto = parseInt(params.get('desconto')) || DESCONTO_FALLBACK;
+  const cupom = (params.get('cupom') || 'PRIMAVERA').toUpperCase();
+  const validade = params.get('validade') || '25/09';
+  const vendedorSlug = (params.get('vendedor') || '').toLowerCase();
 
-  // Troque nome, iniciais, cor e telefone (formato 55DDNUMERO) de cada vendedor.
-  // Se cada vendedor tiver WhatsApp próprio, troca o "telefone" individualmente.
-  // Se todos caem no mesmo número (Macal Marketing) e a triagem é manual,
-  // deixa o mesmo telefone nos três e o nome ajuda a rotear internamente.
   const VENDEDORES = [
-    { nome: "Marcelo",    iniciais: "MA", cor: "#009246", telefone: "5531994380416", foto: "marcelo.jpg" },
-    { nome: "Felipe",     iniciais: "FE", cor: "#18382b", telefone: "5531994380407", foto: "felipe.jpg" },
-    { nome: "Ana Livia",  iniciais: "AL", cor: "#ed3237", telefone: "5531994340777", foto: "ana-livia.jpg" },
-    { nome: "Kaique",     iniciais: "KA", cor: "#009246", telefone: "5531984335866", foto: "kaique.jpg" },
-    { nome: "Ricardo",    iniciais: "RI", cor: "#18382b", telefone: "5531982094862", foto: "ricardo.jpg" },
-    { nome: "Bruno",      iniciais: "BR", cor: "#ed3237", telefone: "5531983415122", foto: "bruno.jpg" },
-    { nome: "Matheus",    iniciais: "MT", cor: "#009246", telefone: "5531983494210", foto: "matheus.jpg" },
-    { nome: "Thaís",      iniciais: "TH", cor: "#18382b", telefone: "5531985428504", foto: "thais.jpg" },
-    { nome: "Douglas",    iniciais: "DO", cor: "#ed3237", telefone: "5531982369477", foto: "douglas.jpg" },
+    { slug: "ana-livia", nome: "Ana Lívia", iniciais: "AL", cor: "#009246", telefone: "5531994340777", foto: "ana-livia.jpg" },
+    // demais consultores voltam aqui depois da campanha PRIMAVERA
   ];
 
-  /* ====================================================== */
-
+  const lista_vendedores = vendedorSlug ? VENDEDORES.filter(v => v.slug === vendedorSlug) : VENDEDORES.filter(v => v.slug !== 'macal');
   const estadoInicio = document.getElementById('estado-inicio');
   const estadoRevelacao = document.getElementById('estado-revelacao');
   const estadoVendedores = document.getElementById('estado-vendedores');
@@ -349,7 +327,7 @@
 
       const angulo = (Math.PI * 2 * i) / 30 + (Math.random() * 0.3 - 0.15);
       const distancia = 85 + Math.random() * 55;
-      const queda = 20 + Math.random() * 30; // leve efeito de gravidade após o estouro
+      const queda = 20 + Math.random() * 30;
       p.style.setProperty('--tx', Math.cos(angulo) * distancia + 'px');
       p.style.setProperty('--ty', (Math.sin(angulo) * distancia + queda) + 'px');
       p.style.setProperty('--rot', (Math.random() * 540 - 270) + 'deg');
@@ -377,31 +355,38 @@
     criarParticulas();
     setTimeout(() => {
       medalhaEl.classList.add('visivel');
+      legendaEl.textContent = `de desconto no seu orçamento · cupom ${cupom} · válido até ${validade}`;
       legendaEl.classList.add('visivel');
       contarAte(desconto);
+      setTimeout(() => { numeroEl.innerHTML = desconto + ' <span>%</span>'; }, 900);
       btnResgatar.style.display = 'block';
     }, 600);
   });
 
+  function linkWhats(v) {
+    const texto = encodeURIComponent(`Oi ${v.nome}, quero usar o cupom ${cupom} de ${desconto}% no meu orçamento.`);
+    return `https://wa.me/${v.telefone}?text=${texto}`;
+  }
+
   btnResgatar.addEventListener('click', () => {
+    const unico = lista_vendedores.length === 1 ? lista_vendedores[0] : (VENDEDORES.length === 1 ? VENDEDORES[0] : null);
+    if (unico) { window.location.href = linkWhats(unico); return; }
     trocarEstado(estadoRevelacao, estadoVendedores);
   });
 
   const lista = document.getElementById('lista-vendedores');
-  VENDEDORES.forEach(v => {
+  if (lista_vendedores.length === 1) { document.getElementById('sub-vendedores').textContent = 'Toque pra abrir o WhatsApp com o cupom já preenchido.'; }
+  (lista_vendedores.length ? lista_vendedores : VENDEDORES).forEach(v => {
     const btn = document.createElement('button');
     btn.className = 'vendedor';
     btn.innerHTML = `
       <div class="avatar" style="background:${v.cor}">
-        <img src="${v.foto}" alt="${v.nome}" onerror="this.remove(); this.parentElement.textContent='${v.iniciais}';">
+        <img src="${v.foto}" alt="${v.nome}" onerror="var p=this.parentElement; this.remove(); p.textContent='${v.iniciais}';">
       </div>
       <div class="nome-vendedor">${v.nome}</div>
     `;
     btn.addEventListener('click', () => {
-      const texto = encodeURIComponent(
-        `Olá ${v.nome}, quero saber sobre meu desconto de ${desconto}%.`
-      );
-      window.open(`https://wa.me/${v.telefone}?text=${texto}`, '_blank');
+      window.open(linkWhats(v), '_blank');
     });
     lista.appendChild(btn);
   });
