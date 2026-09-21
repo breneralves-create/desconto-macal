@@ -384,7 +384,7 @@
   });
 
   function linkWhats(v) {
-    const texto = encodeURIComponent(`Oi ${v.nome}, quero usar o cupom ${cupom} de ${desconto}% no meu orçamento.`);
+    const texto = encodeURIComponent(`Oi ${v.nome.split(" ")[0]}, quero usar o cupom ${cupom} de ${desconto}%.`);
     return `https://wa.me/${v.telefone}?text=${texto}`;
   }
 
