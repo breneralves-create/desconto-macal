@@ -269,7 +269,7 @@
       </div>
     </div>
     <p class="legenda-desconto" id="legenda">de desconto no seu orçamento</p>
-    <button id="btn-resgatar" style="display:none;">Resgatar com a Ana Lívia</button>
+    <button id="btn-resgatar" style="display:none;">Resgatar com um consultor</button>
   </div>
 
   <!-- ESTADO 3: escolha do vendedor -->
@@ -370,6 +370,9 @@
     }
     requestAnimationFrame(passo);
   }
+
+  const unicoInicial = lista_vendedores.length === 1 ? lista_vendedores[0] : (VENDEDORES.length === 1 ? VENDEDORES[0] : null);
+  if (unicoInicial) { btnResgatar.textContent = "Resgatar com " + unicoInicial.nome; }
 
   document.getElementById('btn-revelar').addEventListener('click', () => {
     trocarEstado(estadoInicio, estadoRevelacao);
